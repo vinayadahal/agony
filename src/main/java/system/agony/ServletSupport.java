@@ -14,6 +14,7 @@ public class ServletSupport {
     String method;
     String parameter;
     List<String> classUrl = new ArrayList();
+    UrlMapper objUrlMapper = new UrlMapper();
 
     public boolean findContextPath(String contextPath, String browserUrl) {
         String[] ctx = contextPath.split("/");
@@ -59,12 +60,17 @@ public class ServletSupport {
                 method = classUrl.get(1);
                 classUrl.clear();
                 break;
+            case 1:
+                System.out.println("case 1");
+                controller = classUrl.get(0);
+                method = objUrlMapper.defaultMethod; // default method to call if url doesn't contains any methodname
+                classUrl.clear();
+                break;
             default:
                 System.out.println("case default");
                 System.out.println("Url error: 404");
                 if (controller == null) {
                     System.out.println("controller should not be null");
-                    UrlMapper objUrlMapper = new UrlMapper();
                     String controllerUrl = objUrlMapper.welcomeFile;
                     String[] splitted = controllerUrl.split("/");
                     controller = splitted[0];
