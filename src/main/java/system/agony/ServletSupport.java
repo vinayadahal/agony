@@ -41,7 +41,6 @@ public class ServletSupport {
                 classUrl.add(j++, splittedUrlData);
             }
         }
-
     }
 
     public void urlParser() {
@@ -86,6 +85,9 @@ public class ServletSupport {
     }
 
     public String classCaller() {
+        if (HttpRedirection.checkIfResources(controller + "/" + method)) {
+            return controller + "/" + method;
+        }
         String path = "controllers." + controller;
         try {
             Class cls = Class.forName(path);

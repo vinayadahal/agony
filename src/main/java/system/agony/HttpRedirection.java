@@ -1,6 +1,9 @@
 package system.agony;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -29,9 +32,22 @@ public class HttpRedirection {
 
     public static void pageRender(String folderViewName) {
         try {
-            request.getRequestDispatcher("/" + folderViewName + ".jsp").forward(request, response);
+            Map dataForResponse = StaticVariables.responseData;
+            for (Object key : dataForResponse.keySet()) {
+                System.out.println(key + ": " + dataForResponse.get(key));
+                request.setAttribute(key.toString(), dataForResponse.get(key));
+            }
+            if (checkIfResources(folderViewName)) {
+                request.getRequestDispatcher(folderViewName).forward(request, response);
+            } else {
+                request.getRequestDispatcher("/" + folderViewName + ".jsp").forward(request, response);
+            }
         } catch (ServletException | IOException ex) {
             Logger.getLogger(Redirection.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static boolean checkIfResources(String path) {
+        return path.contains("css") || path.contains("js") || path.contains("images") || path.contains("fonts"); // for dealing with css and js.
     }
 }

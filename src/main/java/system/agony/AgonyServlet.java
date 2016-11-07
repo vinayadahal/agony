@@ -11,6 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import static system.agony.HttpRedirection.request;
+import static system.agony.HttpRedirection.response;
 import system.packages.StaticVariables;
 import system.packages.params;
 
@@ -56,7 +58,6 @@ public class AgonyServlet implements Filter {
         } else {
             HttpRedirection.pageRender(folderViewName); // calling method for page rendering
         }
-
     }
 
     @Override
