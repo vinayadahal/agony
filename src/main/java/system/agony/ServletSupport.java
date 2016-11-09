@@ -38,28 +38,29 @@ public class ServletSupport {
             String[] splittedUrl = browserUrl.split("/");
             int j = 0;
             for (String splittedUrlData : splittedUrl) {
-                classUrl.add(j++, splittedUrlData);
+                if (!"".equals(splittedUrlData)) {
+                    classUrl.add(j++, splittedUrlData);
+                }
             }
         }
     }
 
     public void urlParser() {
         switch (classUrl.size()) {
-            case 3:
+            case 3: // if url contains controllername, method and parameter.
                 System.out.println("case 3");
                 controller = classUrl.get(0);
                 method = classUrl.get(1);
                 params.id = classUrl.get(2);
-//                parameter = classUrl.get(2);
                 classUrl.clear();
                 break;
-            case 2:
+            case 2: // if url contains controllername and method name
                 System.out.println("case 2");
                 controller = classUrl.get(0);
                 method = classUrl.get(1);
                 classUrl.clear();
                 break;
-            case 1:
+            case 1: // if url contains only controller only. During this, default method will be called
                 System.out.println("case 1");
                 controller = classUrl.get(0);
                 method = objUrlMapper.defaultMethod; // default method to call if url doesn't contains any methodname
@@ -76,7 +77,6 @@ public class ServletSupport {
                     method = splitted[1];
                     classUrl.clear();
                 }
-
                 break;
         }
         System.out.println("Controller: " + controller);
@@ -85,9 +85,6 @@ public class ServletSupport {
     }
 
     public String classCaller() {
-        if (HttpRedirection.checkIfResources(controller + "/" + method)) {
-            return controller + "/" + method;
-        }
         String path = "controllers." + controller;
         try {
             Class cls = Class.forName(path);

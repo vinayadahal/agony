@@ -11,8 +11,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import static system.agony.HttpRedirection.request;
-import static system.agony.HttpRedirection.response;
 import system.packages.StaticVariables;
 import system.packages.params;
 
@@ -43,12 +41,28 @@ public class AgonyServlet implements Filter {
         String contextPath = req.getContextPath();
         setRegularParams(req); // setting regular getParameter() as agony system params
         if (objServletSupport.findContextPath(contextPath, browserUrl)) {
+            System.out.println("Running From context path.....");
+            if (StaticVariables.checkIfResources(browserUrl)) { // redirection for resources (css,js,image and fonts)
+                System.out.println("BrowserURL:::: " + browserUrl);
+                System.out.println("CONTEXT PATH:::: " + contextPath.substring(1));
+                String regex = "\\s*\\b" + contextPath.substring(1) + "\\b\\s*";
+                browserUrl = browserUrl.replaceAll(regex, "");
+                if (browserUrl.substring(0, 1).contains("/")) {
+                    System.out.println("FINAL URL::: " + browserUrl.substring(1));
+                    HttpRedirection.pageRender(browserUrl.substring(1));
+                }
+                return;
+            }
             objServletSupport.classUrlMaker(browserUrl, true);
             objServletSupport.urlParser();
             folderViewName = objServletSupport.classCaller(); // gets method name with class name. need to make dir per each class.
         } else {
-            System.out.println("false");
-            objServletSupport.classUrlMaker(browserUrl, true);
+            System.out.println("Running from root....");
+            if (StaticVariables.checkIfResources(browserUrl)) {
+                HttpRedirection.pageRender(browserUrl);
+                return;
+            }
+            objServletSupport.classUrlMaker(browserUrl, false);
             objServletSupport.urlParser();
             folderViewName = objServletSupport.classCaller(); // gets method name with class name. need to make dir per each class.
         }
@@ -62,12 +76,10 @@ public class AgonyServlet implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-//        System.out.println("Filter init");
     }
 
     @Override
     public void destroy() {
-//        System.out.println("Filter Destroy");
     }
 
     public void setRegularParams(HttpServletRequest request) {

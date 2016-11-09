@@ -11,4 +11,7 @@ public class StaticVariables {
     public static String parameters = null;
     public static Map responseData = new HashMap();
 
+    public static boolean checkIfResources(String path) {
+        return path.contains("css") || path.contains("js") || path.contains("images") || path.contains("fonts"); // for dealing with css and js.
+    }
 }
